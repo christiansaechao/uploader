@@ -13,6 +13,7 @@ EBAY_OAUTH_AUTH_URL = (
     if ebay_settings.EBAY_SANDBOX
     else "https://auth.ebay.com/oauth2/authorize"
 )
+
 EBAY_OAUTH_TOKEN_URL = (
     "https://api.sandbox.ebay.com/identity/v1/oauth2/token"
     if ebay_settings.EBAY_SANDBOX
@@ -43,7 +44,7 @@ async def read_root():
     return """
     <h1>Uploader Hub</h1>
     <p>Welcome to your Uploader Hub! Test eBay integration:</p>
-    <p><a href='/api/ebay_oauth/ebay/connect'>Connect to eBay Sandbox</a></p>
+    <p><a href='/api/ebay_oauth/connect'>Connect to eBay Sandbox</a></p>
     <p><a href='/api/ebay_oauth/privacy'>View Privacy Policy (Placeholder)</a></p>
     """
 
@@ -56,8 +57,7 @@ async def privacy_policy():
     <p>In a real application, this page would detail how user data is collected, used, and protected.</p>
     """
 
-
-@router.get("/ebay/connect")
+@router.get("/connect")
 async def ebay_connect(request: Request):
     redirect_uri = get_redirect_uri(request)
     auth_url = (
@@ -67,10 +67,11 @@ async def ebay_connect(request: Request):
         f"redirect_uri={redirect_uri}&"
         f"scope={EBAY_SCOPES_STR}"
     )
+
     return RedirectResponse(url=auth_url)
 
 
-@router.get("/ebay/oauth_callback")
+@router.get("/oauth_callback")
 async def ebay_oauth_callback(request: Request):
     code = request.query_params.get("code")
     error = request.query_params.get("error")
@@ -99,8 +100,6 @@ async def ebay_oauth_callback(request: Request):
             response = await client.post(
                 EBAY_OAUTH_TOKEN_URL, headers=headers, data=data
             )
-            
-            print(response)
             response.raise_for_status()
             token_data = response.json()
             access_token = token_data.get("access_token")

@@ -14,6 +14,7 @@ from app.settings.database import init_db
 # Load environment variables
 load_dotenv()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     print("🛑 Shutting down Uploader Hub Backend...")
+
 
 # Create FastAPI app
 app = FastAPI(
