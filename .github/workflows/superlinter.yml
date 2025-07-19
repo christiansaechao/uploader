@@ -2,20 +2,20 @@ name: Super-Linter
 
 on: push
 
+permissions:
+  contents: read
+  statuses: write
+  checks: write
+
 jobs:
   super-lint:
-    name: Lint code base
+    name: SuperLint code base
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      statuses: write
-      checks: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v4
       - name: Run Super-Linter
-        uses: super-linter/super-linter@v7.1.0
+        uses: super-linter/super-linter@v6
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
