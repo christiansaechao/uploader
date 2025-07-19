@@ -1,12 +1,10 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Plus,
+  Search,
+  Filter,
+  Trash2,
   ExternalLink,
   ShoppingCart,
   Store,
@@ -14,14 +12,14 @@ import {
   AlertCircle,
   Clock,
   Download,
-  Package
-} from 'lucide-react'
-import useItemsStore from '../stores/itemsStore'
-import { format } from 'date-fns'
+  Package,
+} from 'lucide-react';
+import useItemsStore from '../stores/itemsStore';
+import { format } from 'date-fns';
 
 export default function ItemsList() {
+// add items to const below back in later
   const {
-    items,
     loading,
     getFilteredItems,
     setFilter,
@@ -32,106 +30,122 @@ export default function ItemsList() {
     clearSelection,
     deleteItem,
     publishToPlatform,
-    bulkPublish
-  } = useItemsStore()
+    bulkPublish,
+  } = useItemsStore();
 
-  const [isPublishing, setIsPublishing] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
-  const filteredItems = getFilteredItems()
+  const filteredItems = getFilteredItems();
 
   useEffect(() => {
-    setFilter('search', searchTerm)
-  }, [searchTerm, setFilter])
+    setFilter('search', searchTerm);
+  }, [searchTerm, setFilter]);
 
   const handleDeleteItem = async (itemId) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        await deleteItem(itemId)
+        await deleteItem(itemId);
       } catch (error) {
-        console.error('Failed to delete item:', error)
+        console.error('Failed to delete item:', error);
       }
     }
-  }
+  };
 
+
+  // eslint-disable-next-line no-unused-vars
   const handlePublishToPlatform = async (itemId, platform) => {
     try {
-      setIsPublishing(true)
-      await publishToPlatform(itemId, platform)
+      setIsPublishing(true);
+      await publishToPlatform(itemId, platform);
     } catch (error) {
-      console.error(`Failed to publish to ${platform}:`, error)
+      console.error(`Failed to publish to ${platform}:`, error);
     } finally {
-      setIsPublishing(false)
+      setIsPublishing(false);
     }
-  }
+  };
 
   const handleBulkPublish = async (platforms) => {
-    if (selectedItems.size === 0) return
+    if (selectedItems.size === 0) return;
 
     try {
-      setIsPublishing(true)
-      await bulkPublish(Array.from(selectedItems), platforms)
-      clearSelection()
+      setIsPublishing(true);
+      await bulkPublish(Array.from(selectedItems), platforms);
+      clearSelection();
     } catch (error) {
-      console.error('Failed to bulk publish:', error)
+      console.error('Failed to bulk publish:', error);
     } finally {
-      setIsPublishing(false)
+      setIsPublishing(false);
     }
-  }
+  };
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'published':
-        return <CheckCircle className="h-4 w-4 text-success-600" />
+        return <CheckCircle className="h-4 w-4 text-success-600" />;
       case 'failed':
-        return <AlertCircle className="h-4 w-4 text-error-600" />
+        return <AlertCircle className="h-4 w-4 text-error-600" />;
       case 'pending':
-        return <Clock className="h-4 w-4 text-warning-600" />
+        return <Clock className="h-4 w-4 text-warning-600" />;
       default:
-        return <Clock className="h-4 w-4 text-gray-400" />
+        return <Clock className="h-4 w-4 text-gray-400" />;
     }
-  }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'published':
-        return 'bg-success-100 text-success-800'
+        return 'bg-success-100 text-success-800';
       case 'failed':
-        return 'bg-error-100 text-error-800'
+        return 'bg-error-100 text-error-800';
       case 'pending':
-        return 'bg-warning-100 text-warning-800'
+        return 'bg-warning-100 text-warning-800';
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800';
     }
-  }
+  };
 
   const exportToCSV = () => {
-    const headers = ['Title', 'Description', 'Price', 'Quantity', 'Category', 'eBay Status', 'Shopify Status', 'Created At']
+    const headers = [
+      'Title',
+      'Description',
+      'Price',
+      'Quantity',
+      'Category',
+      'eBay Status',
+      'Shopify Status',
+      'Created At',
+    ];
     const csvContent = [
       headers.join(','),
-      ...filteredItems.map(item => [
-        `"${item.title}"`,
-        `"${item.description}"`,
-        item.price,
-        item.quantity,
-        item.category,
-        item.platforms?.ebay?.status || 'not-published',
-        item.platforms?.shopify?.status || 'not-published',
-        format(new Date(item.createdAt), 'yyyy-MM-dd HH:mm:ss')
-      ].join(','))
-    ].join('\n')
+      ...filteredItems.map((item) =>
+        [
+          `"${item.title}"`,
+          `"${item.description}"`,
+          item.price,
+          item.quantity,
+          item.category,
+          item.platforms?.ebay?.status || 'not-published',
+          item.platforms?.shopify?.status || 'not-published',
+          format(new Date(item.createdAt), 'yyyy-MM-dd HH:mm:ss'),
+        ].join(','),
+      ),
+    ].join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', `items-${format(new Date(), 'yyyy-MM-dd')}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    window.URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `items-${format(new Date(), 'yyyy-MM-dd')}.csv`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="space-y-6">
@@ -144,10 +158,7 @@ export default function ItemsList() {
           </p>
         </div>
         <div className="flex space-x-3">
-          <button
-            onClick={exportToCSV}
-            className="btn btn-secondary"
-          >
+          <button onClick={exportToCSV} className="btn btn-secondary">
             <Download className="h-4 w-4 mr-2" />
             Export CSV
           </button>
@@ -173,7 +184,7 @@ export default function ItemsList() {
               />
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -182,7 +193,7 @@ export default function ItemsList() {
               <Filter className="h-4 w-4 mr-2" />
               Filters
             </button>
-            
+
             {selectedItems.size > 0 && (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">
@@ -218,7 +229,7 @@ export default function ItemsList() {
                   <option value="failed">Failed</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Platform
@@ -283,7 +294,9 @@ export default function ItemsList() {
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-12">
             <Package className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No items found</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No items found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               Get started by creating a new item.
             </p>
@@ -305,9 +318,9 @@ export default function ItemsList() {
                       checked={selectedItems.length === filteredItems.length}
                       onChange={() => {
                         if (selectedItems.size === filteredItems.length) {
-                          clearSelection()
+                          clearSelection();
                         } else {
-                          selectAllItems()
+                          selectAllItems();
                         }
                       }}
                       className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
@@ -367,16 +380,24 @@ export default function ItemsList() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {getStatusIcon(item.platforms?.ebay?.status || 'pending')}
-                        <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.platforms?.ebay?.status || 'pending')}`}>
+                        {getStatusIcon(
+                          item.platforms?.ebay?.status || 'pending',
+                        )}
+                        <span
+                          className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.platforms?.ebay?.status || 'pending')}`}
+                        >
                           {item.platforms?.ebay?.status || 'pending'}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {getStatusIcon(item.platforms?.shopify?.status || 'pending')}
-                        <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.platforms?.shopify?.status || 'pending')}`}>
+                        {getStatusIcon(
+                          item.platforms?.shopify?.status || 'pending',
+                        )}
+                        <span
+                          className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.platforms?.shopify?.status || 'pending')}`}
+                        >
                           {item.platforms?.shopify?.status || 'pending'}
                         </span>
                       </div>
@@ -422,5 +443,5 @@ export default function ItemsList() {
         )}
       </div>
     </div>
-  )
-} 
+  );
+}

@@ -57,6 +57,7 @@ async def privacy_policy():
     <p>In a real application, this page would detail how user data is collected, used, and protected.</p>
     """
 
+
 @router.get("/connect")
 async def ebay_connect(request: Request):
     redirect_uri = get_redirect_uri(request)

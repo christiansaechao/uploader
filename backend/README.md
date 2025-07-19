@@ -31,47 +31,52 @@ A modern FastAPI backend for bulk uploading items to eBay and Shopify platforms.
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd uploader
    ```
 
 2. **Run the setup script**
+
    ```bash
    python setup_python.py
    ```
 
 3. **Start the backend server**
+
    ```bash
    cd backend
    python -m uvicorn main:app --reload --host 0.0.0.0 --port 3001
    ```
 
 4. **Access the API**
-   - API: http://localhost:3001
-   - Documentation: http://localhost:3001/docs
-   - Health Check: http://localhost:3001/api/health
+   - API: [http://localhost:3001](http://localhost:3001)
+   - Documentation: [http://localhost:3001/docs](http://localhost:3001/docs)
+   - Health Check: [http://localhost:3001/api/health](http://localhost:3001/api/health)
 
-## API Endpoints
+### API Endpoints
 
-### Items Management
-- `GET /api/items` - Get all items with filtering
-- `GET /api/items/{item_id}` - Get specific item
-- `POST /api/items` - Create new item
-- `PUT /api/items/{item_id}` - Update item
-- `DELETE /api/items/{item_id}` - Delete item
-- `GET /api/items/stats/summary` - Get items statistics
+```http
+# Items Management
+GET    /api/items                     - Get all items with filtering
+GET    /api/items/{item_id}          - Get specific item
+POST   /api/items                    - Create new item
+PUT    /api/items/{item_id}          - Update item
+DELETE /api/items/{item_id}         - Delete item
+GET    /api/items/stats/summary     - Get items statistics
 
-### Platform Publishing
-- `POST /api/platforms/{platform}/{item_id}` - Publish item to platform
-- `POST /api/platforms/bulk` - Bulk publish items
-- `GET /api/platforms/status` - Get platform connection status
+# Platform Publishing
+POST   /api/platforms/{platform}/{item_id} - Publish item to platform
+POST   /api/platforms/bulk                 - Bulk publish items
+GET    /api/platforms/status               - Get platform connection status
 
-### File Upload
-- `POST /api/upload/csv` - Upload and parse CSV file
-- `POST /api/upload/bulk` - Bulk create items from parsed data
-- `GET /api/upload/template` - Download CSV template
-- `POST /api/upload/validate` - Validate CSV data
+# File Upload
+POST   /api/upload/csv            - Upload and parse CSV file
+POST   /api/upload/bulk           - Bulk create items from parsed data
+GET    /api/upload/template       - Download CSV template
+POST   /api/upload/validate       - Validate CSV data
+```
 
 ## Configuration
 
@@ -106,12 +111,14 @@ REDIS_URL=redis://localhost:6379/0
 ### API Keys Setup
 
 #### eBay API
+
 1. Go to [eBay Developer Portal](https://developer.ebay.com/)
 2. Create a new application
 3. Get your App ID, Cert ID, and Client Secret
 4. Add them to your `.env` file
 
 #### Shopify API
+
 1. Go to your Shopify Admin
 2. Navigate to Apps > Develop apps
 3. Create a new app
@@ -121,6 +128,7 @@ REDIS_URL=redis://localhost:6379/0
 ## Data Models
 
 ### Item Model
+
 ```python
 class Item(BaseModel):
     title: str
@@ -139,7 +147,9 @@ class Item(BaseModel):
 ```
 
 ### CSV Template
+
 Download the CSV template to see the expected format:
+
 ```bash
 curl http://localhost:3001/api/upload/template -o template.csv
 ```
@@ -147,6 +157,8 @@ curl http://localhost:3001/api/upload/template -o template.csv
 ## Development
 
 ### Project Structure
+
+<pre>
 ```
 backend/
 ├── app/
@@ -168,14 +180,17 @@ backend/
 ├── requirements.txt      # Python dependencies
 └── README.md            # This file
 ```
+</pre>
 
 ### Running Tests
+
 ```bash
 cd backend
 pytest
 ```
 
 ### Code Formatting
+
 ```bash
 cd backend
 black .
@@ -192,6 +207,7 @@ isort .
 ## Production Deployment
 
 ### Using Docker
+
 ```dockerfile
 FROM python:3.11-slim
 
@@ -206,6 +222,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3001"]
 ```
 
 ### Using Gunicorn
+
 ```bash
 pip install gunicorn
 gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:3001
@@ -214,10 +231,12 @@ gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:3001
 ## API Documentation
 
 Once the server is running, visit:
-- **Swagger UI**: http://localhost:3001/docs
-- **ReDoc**: http://localhost:3001/redoc
+
+- **Swagger UI**: [http://localhost:3001/docs](http://localhost:3001/docs)
+- **ReDoc**: [http://localhost:3001/redoc](http://localhost:3001/redoc)
 
 The documentation is automatically generated from your FastAPI code and includes:
+
 - All endpoints with parameters
 - Request/response schemas
 - Interactive testing interface
@@ -228,11 +247,13 @@ The documentation is automatically generated from your FastAPI code and includes
 ### Common Issues
 
 1. **Import Errors**: Make sure all dependencies are installed
+
    ```bash
    pip install -r requirements.txt
    ```
 
 2. **Port Already in Use**: Change the port in `.env` or kill the process
+
    ```bash
    lsof -ti:3001 | xargs kill -9
    ```
@@ -245,6 +266,7 @@ The documentation is automatically generated from your FastAPI code and includes
 4. **API Connection Issues**: Verify API keys and network connectivity
 
 ### Logs
+
 Check the console output for detailed error messages and stack traces.
 
 ## Contributing
@@ -258,4 +280,4 @@ Check the console output for detailed error messages and stack traces.
 
 ## License
 
-MIT License - see LICENSE file for details 
+MIT License - see LICENSE file for details

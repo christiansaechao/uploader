@@ -1,24 +1,24 @@
-import { Link, useLocation } from 'react-router-dom'
-import { 
-  Home, 
-  Upload, 
-  FileSpreadsheet, 
-  Package, 
+import { Link, useLocation } from 'react-router-dom';
+import {
+  Home,
+  Upload,
+  FileSpreadsheet,
+  Package,
   AlertCircle,
-  X
-} from 'lucide-react'
-import useItemsStore from '../stores/itemsStore'
+  X,
+} from 'lucide-react';
+import useItemsStore from '../stores/itemsStore';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Home },
   { name: 'Upload Item', href: '/upload', icon: Upload },
   { name: 'Bulk Upload', href: '/bulk-upload', icon: FileSpreadsheet },
   { name: 'Items', href: '/items', icon: Package },
-]
+];
 
 export default function Layout({ children }) {
-  const location = useLocation()
-  const { error, clearError } = useItemsStore()
+  const location = useLocation();
+  const { error, clearError } = useItemsStore();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,7 +59,7 @@ export default function Layout({ children }) {
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 {navigation.map((item) => {
-                  const isActive = location.pathname === item.href
+                  const isActive = location.pathname === item.href;
                   return (
                     <Link
                       key={item.name}
@@ -73,7 +73,7 @@ export default function Layout({ children }) {
                       <item.icon className="mr-2 h-4 w-4" />
                       {item.name}
                     </Link>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -84,7 +84,7 @@ export default function Layout({ children }) {
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
             {navigation.map((item) => {
-              const isActive = location.pathname === item.href
+              const isActive = location.pathname === item.href;
               return (
                 <Link
                   key={item.name}
@@ -100,7 +100,7 @@ export default function Layout({ children }) {
                     {item.name}
                   </div>
                 </Link>
-              )
+              );
             })}
           </div>
         </div>
@@ -108,10 +108,8 @@ export default function Layout({ children }) {
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          {children}
-        </div>
+        <div className="px-4 py-6 sm:px-0">{children}</div>
       </main>
     </div>
-  )
-} 
+  );
+}

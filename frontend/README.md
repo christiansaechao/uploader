@@ -29,17 +29,19 @@ A modern React application for bulk uploading items to eBay and Shopify platform
 
 ### Prerequisites
 
-- Node.js 16+ 
-- npm or yarn
+- Node.js 16+
+- npm or Yarn
 
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Start the development server:
+
 ```bash
 npm run dev
 ```

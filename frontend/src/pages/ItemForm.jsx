@@ -1,35 +1,33 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { 
-  Save, 
-  Upload, 
-  Package, 
-  DollarSign, 
-  Hash, 
-  Tag, 
-  Image, 
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import {
+  Save,
+  Package,
+  DollarSign,
+  Hash,
+  Tag,
+  Image,
   Weight,
   Ruler,
   Truck,
   ShoppingCart,
-  Store
-} from 'lucide-react'
-import useItemsStore from '../stores/itemsStore'
-import { itemFormSchema } from '../schemas/itemSchema'
+  Store,
+} from 'lucide-react';
+import useItemsStore from '../stores/itemsStore';
+import { itemFormSchema } from '../schemas/itemSchema';
 
 export default function ItemForm() {
-  const navigate = useNavigate()
-  const { createItem, loading } = useItemsStore()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate();
+  const { createItem, loading } = useItemsStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
-    setValue
   } = useForm({
     resolver: zodResolver(itemFormSchema),
     defaultValues: {
@@ -49,16 +47,16 @@ export default function ItemForm() {
       shippingMethod: 'Standard',
       shippingCost: '0',
       ebay: false,
-      shopify: false
-    }
-  })
+      shopify: false,
+    },
+  });
 
-  const watchedPlatforms = watch(['ebay', 'shopify'])
+  const watchedPlatforms = watch(['ebay', 'shopify']);
 
   const onSubmit = async (data) => {
     try {
-      setIsSubmitting(true)
-      
+      setIsSubmitting(true);
+
       // Transform form data to match backend schema
       const itemData = {
         title: data.title,
@@ -73,27 +71,27 @@ export default function ItemForm() {
         dimensions: {
           length: data.length,
           width: data.width,
-          height: data.height
+          height: data.height,
         },
         shipping: {
           weight: data.shippingWeight,
           method: data.shippingMethod,
-          cost: data.shippingCost
+          cost: data.shippingCost,
         },
         platforms: {
           ebay: data.ebay,
-          shopify: data.shopify
-        }
-      }
+          shopify: data.shopify,
+        },
+      };
 
-      await createItem(itemData)
-      navigate('/items')
+      await createItem(itemData);
+      navigate('/items');
     } catch (error) {
-      console.error('Failed to create item:', error)
+      console.error('Failed to create item:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -109,9 +107,11 @@ export default function ItemForm() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-center mb-6">
             <Package className="h-6 w-6 text-primary-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Basic Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Basic Information
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -124,7 +124,9 @@ export default function ItemForm() {
                 placeholder="Enter item title"
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-error-600">{errors.title.message}</p>
+                <p className="mt-1 text-sm text-error-600">
+                  {errors.title.message}
+                </p>
               )}
             </div>
 
@@ -139,7 +141,9 @@ export default function ItemForm() {
                 placeholder="Enter item description"
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-error-600">{errors.description.message}</p>
+                <p className="mt-1 text-sm text-error-600">
+                  {errors.description.message}
+                </p>
               )}
             </div>
 
@@ -160,7 +164,9 @@ export default function ItemForm() {
                 />
               </div>
               {errors.price && (
-                <p className="mt-1 text-sm text-error-600">{errors.price.message}</p>
+                <p className="mt-1 text-sm text-error-600">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
@@ -180,7 +186,9 @@ export default function ItemForm() {
                 />
               </div>
               {errors.quantity && (
-                <p className="mt-1 text-sm text-error-600">{errors.quantity.message}</p>
+                <p className="mt-1 text-sm text-error-600">
+                  {errors.quantity.message}
+                </p>
               )}
             </div>
 
@@ -218,9 +226,11 @@ export default function ItemForm() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-center mb-6">
             <Image className="h-6 w-6 text-primary-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Images & Tags</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Images & Tags
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -263,9 +273,11 @@ export default function ItemForm() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-center mb-6">
             <Ruler className="h-6 w-6 text-primary-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Dimensions & Weight</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Dimensions & Weight
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -330,9 +342,11 @@ export default function ItemForm() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-center mb-6">
             <Truck className="h-6 w-6 text-primary-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Shipping Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Shipping Information
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -388,9 +402,11 @@ export default function ItemForm() {
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex items-center mb-6">
             <Store className="h-6 w-6 text-primary-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Publishing Platforms</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Publishing Platforms
+            </h2>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex items-center">
               <input
@@ -412,7 +428,9 @@ export default function ItemForm() {
               />
               <label className="ml-3 flex items-center">
                 <Store className="h-5 w-5 text-green-500 mr-2" />
-                <span className="text-sm font-medium text-gray-700">Shopify</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Shopify
+                </span>
               </label>
             </div>
 
@@ -435,7 +453,11 @@ export default function ItemForm() {
           </button>
           <button
             type="submit"
-            disabled={isSubmitting || loading || (!watchedPlatforms[0] && !watchedPlatforms[1])}
+            disabled={
+              isSubmitting ||
+              loading ||
+              (!watchedPlatforms[0] && !watchedPlatforms[1])
+            }
             className="btn btn-primary btn-lg"
           >
             {isSubmitting ? (
@@ -453,5 +475,5 @@ export default function ItemForm() {
         </div>
       </form>
     </div>
-  )
-} 
+  );
+}

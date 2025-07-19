@@ -1,136 +1,149 @@
-import React, { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { Upload, FileText, CheckCircle, AlertCircle, Download } from 'lucide-react'
-import useItemsStore from '../stores/itemsStore'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
+import { useState, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  AlertCircle,
+  Download,
+} from 'lucide-react';
+import useItemsStore from '../stores/itemsStore';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
 
 const BulkUpload = () => {
-  const [uploadedFile, setUploadedFile] = useState(null)
-  const [previewData, setPreviewData] = useState([])
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [uploadResults, setUploadResults] = useState(null)
-  const { createItem } = useItemsStore()
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [previewData, setPreviewData] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadResults, setUploadResults] = useState(null);
+  const { createItem } = useItemsStore();
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    const file = acceptedFiles[0]
-    if (!file) return
+    const file = acceptedFiles[0];
+    if (!file) return;
 
-    setUploadedFile(file)
-    setUploadResults(null)
+    setUploadedFile(file);
+    setUploadResults(null);
 
     // Parse CSV file
-    const formData = new FormData()
-    formData.append('file', file)
+    const formData = new FormData();
+    formData.append('file', file);
 
     try {
       const response = await fetch('/api/upload/csv', {
         method: 'POST',
-        body: formData
-      })
-      
+        body: formData,
+      });
+
       if (!response.ok) {
-        throw new Error('Failed to parse CSV file')
+        throw new Error('Failed to parse CSV file');
       }
-      
-      const data = await response.json()
-      setPreviewData(data.items || [])
+
+      const data = await response.json();
+      setPreviewData(data.items || []);
     } catch (error) {
-      console.error('Error parsing CSV:', error)
-      setPreviewData([])
+      console.error('Error parsing CSV:', error);
+      setPreviewData([]);
     }
-  }, [])
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       'text/csv': ['.csv'],
       'application/vnd.ms-excel': ['.xls'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
+        '.xlsx',
+      ],
     },
-    multiple: false
-  })
+    multiple: false,
+  });
 
   const handleUpload = async () => {
-    if (!previewData.length) return
+    if (!previewData.length) return;
 
-    setUploading(true)
-    setUploadProgress(0)
+    setUploading(true);
+    setUploadProgress(0);
 
     try {
       // Create items one by one to show progress
-      const createdItems = []
+      const createdItems = [];
       for (let i = 0; i < previewData.length; i++) {
-        const item = previewData[i]
+        const item = previewData[i];
         try {
-          const createdItem = await createItem(item)
-          createdItems.push({ ...createdItem, status: 'success' })
+          const createdItem = await createItem(item);
+          createdItems.push({ ...createdItem, status: 'success' });
         } catch (error) {
-          createdItems.push({ ...item, status: 'error', error: error.message })
+          createdItems.push({ ...item, status: 'error', error: error.message });
         }
-        
-        setUploadProgress(((i + 1) / previewData.length) * 100)
+
+        setUploadProgress(((i + 1) / previewData.length) * 100);
       }
 
       setUploadResults({
         total: previewData.length,
-        successful: createdItems.filter(item => item.status === 'success').length,
-        failed: createdItems.filter(item => item.status === 'error').length,
-        items: createdItems
-      })
+        successful: createdItems.filter((item) => item.status === 'success')
+          .length,
+        failed: createdItems.filter((item) => item.status === 'error').length,
+        items: createdItems,
+      });
 
       // If all items were created successfully, also try bulk upload
-      if (createdItems.every(item => item.status === 'success')) {
+      if (createdItems.every((item) => item.status === 'success')) {
         try {
           await fetch('/api/upload/bulk', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ items: createdItems.filter(item => item.status === 'success') })
-          })
+            body: JSON.stringify({
+              items: createdItems.filter((item) => item.status === 'success'),
+            }),
+          });
         } catch (error) {
-          console.error('Bulk upload failed:', error)
+          console.error('Bulk upload failed:', error);
         }
       }
     } catch (error) {
-      console.error('Upload failed:', error)
+      console.error('Upload failed:', error);
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const downloadTemplate = async () => {
     try {
       const response = await fetch('/api/upload/template', {
-        method: 'GET'
-      })
-      
+        method: 'GET',
+      });
+
       if (!response.ok) {
-        throw new Error('Failed to download template')
+        throw new Error('Failed to download template');
       }
-      
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'bulk-upload-template.csv'
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bulk-upload-template.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } catch (error) {
-      console.error('Error downloading template:', error)
+      console.error('Error downloading template:', error);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Bulk Upload</h1>
-          <p className="text-gray-600">Upload multiple items at once using CSV files</p>
+          <p className="text-gray-600">
+            Upload multiple items at once using CSV files
+          </p>
         </div>
         <Button onClick={downloadTemplate} variant="outline">
           <Download className="w-4 h-4 mr-2" />
@@ -177,7 +190,9 @@ const BulkUpload = () => {
         <Card>
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Preview ({previewData.length} items)</h3>
+              <h3 className="text-lg font-semibold">
+                Preview ({previewData.length} items)
+              </h3>
               <Button onClick={handleUpload} disabled={uploading}>
                 {uploading ? 'Uploading...' : 'Upload Items'}
               </Button>
@@ -231,7 +246,8 @@ const BulkUpload = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {uploadResults?.items?.[index]?.status === 'success' ? (
                           <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : uploadResults?.items?.[index]?.status === 'error' ? (
+                        ) : uploadResults?.items?.[index]?.status ===
+                          'error' ? (
                           <AlertCircle className="w-4 h-4 text-red-500" />
                         ) : (
                           'Pending'
@@ -258,15 +274,21 @@ const BulkUpload = () => {
             <h3 className="text-lg font-semibold mb-4">Upload Results</h3>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{uploadResults.total}</div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {uploadResults.total}
+                </div>
                 <div className="text-sm text-gray-600">Total Items</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{uploadResults.successful}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {uploadResults.successful}
+                </div>
                 <div className="text-sm text-gray-600">Successful</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-red-600">{uploadResults.failed}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {uploadResults.failed}
+                </div>
                 <div className="text-sm text-gray-600">Failed</div>
               </div>
             </div>
@@ -274,7 +296,7 @@ const BulkUpload = () => {
         </Card>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default BulkUpload 
+export default BulkUpload;
