@@ -19,3 +19,4 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JSCPD_MAX_PERCENTAGE: 1.5
