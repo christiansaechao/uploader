@@ -1,42 +1,28 @@
 import js from '@eslint/js';
 import globals from 'globals';
-import pluginReact from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
 
-export default [
-  js.configs.recommended,
+export default tseslint.config(
+  { ignores: ['dist'] },
   {
-    files: ['**/*.{js,mjs,cjs,jsx}'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
+      ecmaVersion: 2020,
       globals: globals.browser,
     },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
     rules: {
-      'comma-dangle': ['error', 'always-multiline'],
-      'quotes': ['error', 'single'],
-      'no-trailing-spaces': 'error',
-      'eol-last': ['error', 'always'],
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
     },
-  },
-  pluginReact.configs.flat.recommended,
-  {
-    files: ['**/*.{js,jsx}'],
-    rules: {
-      // Disable React in JSX scope rule for modern React (17+)
-      'react/react-in-jsx-scope': 'off',
-      'react/jsx-uses-react': 'off',
-      // Disable prop-types validation (you can enable if you use PropTypes)
-      'react/prop-types': 'off',
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
-  },
-];
+  }
+);

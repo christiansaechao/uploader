@@ -101,7 +101,6 @@ export const filterSchema = z.object({
 });
 
 // Type exports (for TypeScript projects)
-// Remove these lines if using JavaScript. If using TypeScript, rename this file to .ts and uncomment below:
 // export type Item = z.infer<typeof itemSchema>
 // export type ItemFormData = z.infer<typeof itemFormSchema>
 // export type CSVUploadData = z.infer<typeof csvUploadSchema>
