@@ -4,12 +4,9 @@ import type { Listing } from '../types';
 
 interface ListingsProps {
   listings: Listing[];
-  onCreateListing: () => void;
-  onEditListing: (listing: Listing) => void;
-  onViewListing: (listing: Listing) => void;
 }
 
-export default function Listings({ listings, onCreateListing, onEditListing, onViewListing }: ListingsProps) {
+export default function Listings({ listings }: ListingsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -60,7 +57,6 @@ export default function Listings({ listings, onCreateListing, onEditListing, onV
           <p className="text-gray-600 mt-2">Manage your product listings across all marketplaces.</p>
         </div>
         <button
-          onClick={onCreateListing}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus size={20} />
@@ -176,14 +172,12 @@ export default function Listings({ listings, onCreateListing, onEditListing, onV
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => onViewListing(listing)}
                         className="text-gray-400 hover:text-gray-600"
                         title="View listing"
                       >
                         <Eye size={16} />
                       </button>
                       <button
-                        onClick={() => onEditListing(listing)}
                         className="text-gray-400 hover:text-blue-600"
                         title="Edit listing"
                       >

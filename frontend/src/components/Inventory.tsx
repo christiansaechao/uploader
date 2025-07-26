@@ -4,11 +4,9 @@ import type { InventoryItem } from '../types';
 
 interface InventoryProps {
   inventory: InventoryItem[];
-  onAddItem: () => void;
-  onEditItem: (item: InventoryItem) => void;
 }
 
-export default function Inventory({ inventory, onAddItem, onEditItem }: InventoryProps) {
+export default function Inventory({ inventory }: InventoryProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterBy, setFilterBy] = useState('all');
 
@@ -46,7 +44,6 @@ export default function Inventory({ inventory, onAddItem, onEditItem }: Inventor
           <p className="text-gray-600 mt-2">Track and manage your product inventory across all locations.</p>
         </div>
         <button
-          onClick={onAddItem}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus size={20} />
@@ -153,7 +150,6 @@ export default function Inventory({ inventory, onAddItem, onEditItem }: Inventor
                   <tr 
                     key={item.id} 
                     className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => onEditItem(item)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{item.name}</div>

@@ -4,16 +4,10 @@ import type { Marketplace } from '../types';
 
 interface MarketplacesProps {
   marketplaces: Marketplace[];
-  onConnectMarketplace: () => void;
-  onSyncMarketplace: (marketplace: Marketplace) => void;
-  onConfigureMarketplace: (marketplace: Marketplace) => void;
 }
 
 export default function Marketplaces({ 
-  marketplaces, 
-  onConnectMarketplace, 
-  onSyncMarketplace, 
-  onConfigureMarketplace 
+  marketplaces
 }: MarketplacesProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -52,7 +46,6 @@ export default function Marketplaces({
           <p className="text-gray-600 mt-2">Connect and manage your marketplace integrations.</p>
         </div>
         <button
-          onClick={onConnectMarketplace}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus size={20} />
@@ -131,7 +124,6 @@ export default function Marketplaces({
             <div className="flex space-x-2">
               {marketplace.status === 'connected' && (
                 <button
-                  onClick={() => onSyncMarketplace(marketplace)}
                   className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center space-x-1"
                 >
                   <RefreshCw size={16} />
@@ -139,7 +131,6 @@ export default function Marketplaces({
                 </button>
               )}
               <button
-                onClick={() => onConfigureMarketplace(marketplace)}
                 className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1"
               >
                 <Settings size={16} />

@@ -4,18 +4,10 @@ import type { Template } from '../types';
 
 interface TemplatesProps {
   templates: Template[];
-  onCreateTemplate: () => void;
-  onEditTemplate: (template: Template) => void;
-  onDeleteTemplate: (id: string) => void;
-  onDuplicateTemplate: (template: Template) => void;
 }
 
 export default function Templates({ 
-  templates, 
-  onCreateTemplate, 
-  onEditTemplate, 
-  onDeleteTemplate, 
-  onDuplicateTemplate 
+  templates
 }: TemplatesProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -37,7 +29,6 @@ export default function Templates({
           <p className="text-gray-600 mt-2">Create and manage listing templates for faster product uploads.</p>
         </div>
         <button
-          onClick={onCreateTemplate}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus size={20} />
@@ -79,21 +70,18 @@ export default function Templates({
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => onDuplicateTemplate(template)}
                   className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                   title="Duplicate template"
                 >
                   <Copy size={16} />
                 </button>
                 <button
-                  onClick={() => onEditTemplate(template)}
                   className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
                   title="Edit template"
                 >
                   <Edit size={16} />
                 </button>
                 <button
-                  onClick={() => onDeleteTemplate(template.id)}
                   className="p-2 text-gray-400 hover:text-red-600 transition-colors"
                   title="Delete template"
                 >
@@ -137,7 +125,6 @@ export default function Templates({
           </p>
           {!searchQuery && selectedCategory === 'all' && (
             <button
-              onClick={onCreateTemplate}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Create Template

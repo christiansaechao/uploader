@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import Sidebar from './components/Sidebar';
-import Dashboard from './components/Dashboard';
-import Templates from './components/Templates';
-import Listings from './components/Listings';
-import Inventory from './components/Inventory';
-import Marketplaces from './components/Marketplaces';
-import PricingPage from './components/pricing/PricingPage';
-import LoginPage from './components/auth/LoginPage';
-import SignupPage from './components/auth/SignupPage';
-import SuccessPage from './components/SuccessPage';
-import { useAuth } from './hooks/useAuth';
-import { useSubscription } from './hooks/useSubscription';
-import { useAdmin } from './hooks/useAdmin';
-import { mockStats, mockTemplates, mockListings, mockInventory, mockMarketplaces } from './data/mockData';
+import { RouterProvider } from 'react-router-dom';
+import router from './router';
+import Sidebar from '@/components/ui/Sidebar';
+import Dashboard from '@components/Dashboard';
+import Templates from '@components/Templates';
+import Listings from '@components/Listings';
+import Inventory from '@components/Inventory';
+import Marketplaces from '@components/Marketplaces';
+import PricingPage from '@pages/users/pricing/PricingPage';
+import LoginPage from '@components/auth/LoginPage';
+import SignupPage from '@components/auth/SignupPage';
+import SuccessPage from '@components/SuccessPage';
+import { useAuth } from '@hooks/useAuth';
+import { useSubscription } from '@hooks/useSubscription';
+import { useAdmin } from '@hooks/useAdmin';
+import { mockStats, mockTemplates, mockListings, mockInventory, mockMarketplaces } from '@data/mockData';
 import { LogOut, User, Shield } from 'lucide-react';
 
 function App() {
@@ -24,6 +26,10 @@ function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { getCurrentPlan, loading: subscriptionLoading } = useSubscription();
   const { isAdmin, isSuperAdmin, role } = useAdmin();
+
+  return (
+    <RouterProvider router={router} />
+  )
 
   // Check URL for success parameter
   React.useEffect(() => {
@@ -44,54 +50,6 @@ function App() {
     setActiveTab('dashboard');
   };
 
-  const handleCreateTemplate = () => {
-    console.log('Create new template');
-  };
-
-  const handleEditTemplate = (template: any) => {
-    console.log('Edit template:', template);
-  };
-
-  const handleDeleteTemplate = (id: string) => {
-    console.log('Delete template:', id);
-  };
-
-  const handleDuplicateTemplate = (template: any) => {
-    console.log('Duplicate template:', template);
-  };
-
-  const handleCreateListing = () => {
-    console.log('Create new listing');
-  };
-
-  const handleEditListing = (listing: any) => {
-    console.log('Edit listing:', listing);
-  };
-
-  const handleViewListing = (listing: any) => {
-    console.log('View listing:', listing);
-  };
-
-  const handleAddInventoryItem = () => {
-    console.log('Add inventory item');
-  };
-
-  const handleEditInventoryItem = (item: any) => {
-    console.log('Edit inventory item:', item);
-  };
-
-  const handleConnectMarketplace = () => {
-    console.log('Connect marketplace');
-  };
-
-  const handleSyncMarketplace = (marketplace: any) => {
-    console.log('Sync marketplace:', marketplace);
-  };
-
-  const handleConfigureMarketplace = (marketplace: any) => {
-    console.log('Configure marketplace:', marketplace);
-  };
-
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -100,36 +58,24 @@ function App() {
         return (
           <Templates
             templates={mockTemplates}
-            onCreateTemplate={handleCreateTemplate}
-            onEditTemplate={handleEditTemplate}
-            onDeleteTemplate={handleDeleteTemplate}
-            onDuplicateTemplate={handleDuplicateTemplate}
           />
         );
       case 'listings':
         return (
           <Listings
             listings={mockListings}
-            onCreateListing={handleCreateListing}
-            onEditListing={handleEditListing}
-            onViewListing={handleViewListing}
           />
         );
       case 'inventory':
         return (
           <Inventory
             inventory={mockInventory}
-            onAddItem={handleAddInventoryItem}
-            onEditItem={handleEditInventoryItem}
           />
         );
       case 'marketplaces':
         return (
           <Marketplaces
             marketplaces={mockMarketplaces}
-            onConnectMarketplace={handleConnectMarketplace}
-            onSyncMarketplace={handleSyncMarketplace}
-            onConfigureMarketplace={handleConfigureMarketplace}
           />
         );
       case 'pricing':
